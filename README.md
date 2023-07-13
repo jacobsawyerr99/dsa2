@@ -1,36 +1,10 @@
-# Project Title
+# Traveling Salesman Problem
 
-One Paragraph of project description goes here
+The classic "traveling salesman problem" asks a simple question: Given a list of nodes and distances between those nodes, what is the shortest/ most optimal route to vist each of those nodes exactly once and then return to the start point? This is an implementation of the solution to this problem using Python. The selected datastructure we use is a hashmap and we use a greedy algorithm to optimize.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+To run, clone to your local drive and run using your terminal or code editor. 
 
 ## Running the tests
 
@@ -58,9 +32,7 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Python] (https://www.python.org/downloads/release/python-3111/) - Language
 
 ## Contributing
 
@@ -72,9 +44,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Jacob Sawyer** - *Main Editor* - [jacobsawyerr99](https://github.com/jacobsawyerr99)
 
 ## License
 
@@ -82,7 +52,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+The layout of the problem structure was provided by Western Governors University. Thanks to the professors for guidance on this problem.
 

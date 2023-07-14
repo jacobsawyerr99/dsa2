@@ -5,12 +5,8 @@ from dataclasses import dataclass
 
 
 @dataclass
-class packageObject:
-    ID: int
-    address: str
-    city: str
-    state: str
-    zipcode: str
-    Deadline_time: str
-    weight: int
-    status: str
+class truckObject:
+    speed = float
+    packages = list
+    distanceTraveled = float
+    departTime = str

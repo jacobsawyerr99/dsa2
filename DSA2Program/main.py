@@ -190,7 +190,7 @@ def loadTruck3():
             hash_table_init2.remove(i)
             # if we hit truck limit then pause loading
             if len(list1) == 16:
-                print("16 package limit reached. Delivering now.")
+                print("16 package limit reached.")
                 return list1 
 # call interface to load truck 3
 interface.loadingTruckInterface(3)
@@ -234,4 +234,15 @@ def findDistance(x, y):
 # findDistance(5, 4) --> test
 # address_lookup("380 W 2880 S") --> test
 
+# this method will be called once for all three trucks
+def deliver(truck):
+    # deliver truck 1
+    for i in truck.packages:
+        i = hash_table_init.lookup(i)
+        # print(address_lookup(package.GetAddress(i))) -- > test
+    return 0
+# next we need to deliver packages using the minimum distance using the finddistance method. We are starting from hub and ending at hub
+# after we do that, we need to make time changes for truck 2 and truck 3 leaving the hub.
+# then we should "deliver" each next shortest package. we can adjust loading algo if need be
 
+deliver(t1)

@@ -8,7 +8,7 @@ from package import packageObject
 @dataclass
 class truckObject:
     speed = float
-    packages = list[int]
+    packages = list
     distanceTraveled = float
     departTime = str
 

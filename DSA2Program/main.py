@@ -13,7 +13,7 @@ import interface
 
 interface.prompt()
 
-# handler for packages. Loads into hash table in hash.py
+# handler for packages. Loads into hash table in hash.py. using 2 copies to be able to effectively load trucks
 def loadPkgInHash(hash_table_init, hash_table_init2):
     # actual csv reader to grab data from packageFile.csv
     with open ("packageFile.csv") as packageFileImport:
@@ -230,19 +230,68 @@ def findDistance(x, y):
     # print (float(distance)) --> test
     return float(distance)
 
-
 # findDistance(5, 4) --> test
 # address_lookup("380 W 2880 S") --> test
 
-# this method will be called once for all three trucks
-def deliver(truck):
-    # deliver truck 1
-    for i in truck.packages:
-        i = hash_table_init.lookup(i)
-        # print(address_lookup(package.GetAddress(i))) -- > test
-    return 0
-# next we need to deliver packages using the minimum distance using the finddistance method. We are starting from hub and ending at hub
-# after we do that, we need to make time changes for truck 2 and truck 3 leaving the hub.
-# then we should "deliver" each next shortest package. we can adjust loading algo if need be
+# deliver method. "truck" is passed below. Signifies which of three trucks is being delivered
+# uses the nearest neighbor algorithm to deliver packages. First assigns all distances from start point to list
+# it is recursive until there are 0 packages in list.
 
-deliver(t1)
+def deliver(truck, startAddress):
+    # empty list to store distances
+    distanceList = []
+    
+            # look through list of IDs in truck packages 
+    for i in truck.packages:
+        # find assocaited package
+        p = hash_table_init.lookup(i)
+        # get starting address (this will be updated with 'next' address after remove og address)
+        a1 = address_lookup(startAddress)
+        # get next address distances
+        a2 = address_lookup(p.address)
+        # generate distance between starting addreess (new one each time) and rest of addresses remaining
+        distanceList.append(findDistance(a1, a2))
+
+    if(len(truck.packages) > 1):
+        minDist = min(distanceList)
+        minDistIndex = distanceList.index(min(distanceList))
+
+
+        nextPackage = hash_table_init.lookup(truck.packages[minDistIndex])
+        nextPackage = nextPackage.address
+
+        del truck.packages[minDistIndex]
+        del distanceList[minDistIndex]
+
+        truck.distanceTraveled = truck.distanceTraveled + minDist
+
+        
+        deliver(truck, nextPackage)
+    else:
+        print("Returning to hub...")
+        truck.distanceTraveled = truck.distanceTraveled + findDistance(address_lookup((hash_table_init.lookup(truck.packages[0])).address), address_lookup("4001 South 700 East"))
+    
+    
+
+    # used to add up mileage for each truck
+    # print(truck.packages[minDistIndex]) --> gets element from index based on distance
+    # returns statement to get the minDist (this will change)
+
+
+# next we need to complete steps for truck 1 then add in time functinality. After that,
+# do truck 2 and 3 with their special requirements.
+# modify interface to be able to display package at any given time.
+undelivered1 = t1.packages.copy()
+deliver(t1, t1.startingAddress)
+print(t1.distanceTraveled)
+t1.packages = undelivered1
+
+undelivered2 = t2.packages.copy()
+deliver(t2, t2.startingAddress)
+print(t2.distanceTraveled)
+t2.packages = undelivered2
+
+undelivered = t3.packages.copy()
+deliver(t3, t3.startingAddress)
+print(t3.distanceTraveled)
+t3.packages = undelivered

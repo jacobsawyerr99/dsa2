@@ -10,10 +10,11 @@ import package
 from dataclasses import fields
 from time import sleep
 import interface
+import datetime
 
 interface.prompt()
 
-# handler for packages. Loads into hash table in hash.py
+# handler for packages. Loads into hash table in hash.py. using 2 copies to be able to effectively load trucks
 def loadPkgInHash(hash_table_init, hash_table_init2):
     # actual csv reader to grab data from packageFile.csv
     with open ("packageFile.csv") as packageFileImport:
@@ -190,7 +191,7 @@ def loadTruck3():
             hash_table_init2.remove(i)
             # if we hit truck limit then pause loading
             if len(list1) == 16:
-                print("16 package limit reached. Delivering now.")
+                print("16 package limit reached.")
                 return list1 
 # call interface to load truck 3
 interface.loadingTruckInterface(3)
@@ -230,8 +231,87 @@ def findDistance(x, y):
     # print (float(distance)) --> test
     return float(distance)
 
-
 # findDistance(5, 4) --> test
 # address_lookup("380 W 2880 S") --> test
 
+# deliver method. "truck" is passed below. Signifies which of three trucks is being delivered
+# uses the nearest neighbor algorithm to deliver packages. First assigns all distances from start point to list
+# it is recursive until there are 0 packages in list.
 
+def deliver(truck, startAddress, departTime):
+    # empty list to store distances
+    distanceList = []
+    # look through list of IDs in truck packages 
+    for i in truck.packages:
+        # find assocaited package
+        p = hash_table_init.lookup(i)
+        # get starting address (this will be updated with 'next' address after remove og address)
+        a1 = address_lookup(startAddress)
+        # get next address distances
+        a2 = address_lookup(p.address)
+        # generate distance between starting addreess (new one each time) and rest of addresses remaining
+        distanceList.append(findDistance(a1, a2))
+    # if there is more than one item in list of packages (if theres only one then the next location will be the hub)
+    if(len(truck.packages) > 1):
+        # get min value of our distance list generated in the above for loop
+        minDist = min(distanceList)
+        # get index of minimum value. This will match with index in package list
+        minDistIndex = distanceList.index(min(distanceList))
+
+        # nextPackage will be looked up in hash based on index of value in truck.packages
+        nextPackage = hash_table_init.lookup(truck.packages[minDistIndex])
+        # we then assign the nextPackage variable to the address of the next package. this will be sent to the recursion of the function
+        nextPackage = nextPackage.address
+        # delete values from truck.packages and distancelist so we no longer have to deal with those values
+        del truck.packages[minDistIndex]
+        del distanceList[minDistIndex]
+        # add distance travled for each minimum distance
+        truck.distanceTraveled = truck.distanceTraveled + minDist
+        # webinars suggested tracking this time this way (with dateTime)
+        truck.departTime += datetime.timedelta(hours = minDist / 18)
+        print (truck.departTime)
+        # recursion
+        deliver(truck, nextPackage, truck.departTime)
+    # if there is only 1 package left in truck.packages
+    else:
+        # notify reader we are going back to hub
+        print("Returning to hub...")
+        # add distance from last location back to hub
+        truck.distanceTraveled = truck.distanceTraveled + findDistance(address_lookup((hash_table_init.lookup(truck.packages[0])).address), address_lookup("4001 South 700 East"))
+        truck.departTime += datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(truck.packages[0])).address), address_lookup("4001 South 700 East")) /18 )
+    
+
+    # used to add up mileage for each truck
+    # print(truck.packages[minDistIndex]) --> gets element from index based on distance
+    # returns statement to get the minDist (this will change)
+
+
+# next we need to complete steps for truck 1 then add in time functinality. After that,
+# do truck 2 and 3 with their special requirements.
+# modify interface to be able to display package at any given time.
+def t1Deliver():
+    undelivered1 = t1.packages.copy()
+    t1.departTime = datetime.timedelta(hours = 8)
+    deliver(t1, t1.startingAddress, t1.departTime)
+    print(t1.distanceTraveled)
+    print(t1.departTime)
+    print("t1 finished")
+    t1.packages = undelivered1
+
+def t2Deliver():
+    undelivered2 = t2.packages.copy()
+    t2.departTime = datetime.timedelta(hours = 9)
+    deliver(t2, t2.startingAddress, t2.departTime)
+    print(t2.distanceTraveled)
+    print(t2.departTime)
+    print("t2 finished")
+    t2.packages = undelivered2
+
+def t3Deliver():
+    undelivered = t3.packages.copy()
+    print("truck 1 has returned to hub. delivering truck 3 right now.")
+    t3.departTime = datetime.timedelta(hours = 10, minutes= 30)
+    deliver(t3, t3.startingAddress, t3.departTime)
+    print(t3.distanceTraveled)
+    print(t3.departTime)
+    t3.packages = undelivered

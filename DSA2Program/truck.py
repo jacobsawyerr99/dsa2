@@ -7,12 +7,11 @@ from package import packageObject
 
 @dataclass
 class truckObject:
-    speed = float
-    packages = list[int]
-    distanceTraveled = float
-    departTime = str
+    speed = 18.0 # speed of truckl
+    packages = list[int] # list for packages
+    distanceTraveled = 0.0 #starting distance traveled
+    departTime = str # time truck departed
+    startingAddress = "4001 South 700 East" #start of trip (hub)
 
 
-def __len__(self):
-        return len(self.list)
 

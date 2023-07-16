@@ -7,8 +7,11 @@
 class hashFunc:
     # constructor - adopted from C950 - Webinar-1 - Let’s Go Hashing - Complete Python Code 
     def __init__(self, initial_capacity = 1):
+        # creates table to be used
         self.table = []
+        # loops through initial capacity (i just used 1 for mine)
         for i in range (initial_capacity):
+            # appends initial amount onto table
             self.table.append([])
 
     # inserts/ updates into hashmap.

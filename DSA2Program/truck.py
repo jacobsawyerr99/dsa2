@@ -7,11 +7,11 @@ from package import packageObject
 
 @dataclass
 class truckObject:
-    speed = 18.0 # speed of truckl
+    speed = 18.0 # speed of truck
     packages = list[int] # list for packages
     distanceTraveled = 0.0 #starting distance traveled
     departTime = str # time truck departed
     startingAddress = "4001 South 700 East" #start of trip (hub)
-
-
+    distanceLastPackageToHub = 0
+    timeLastPackageToHub = 0
 

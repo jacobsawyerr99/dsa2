@@ -10,24 +10,26 @@ import colors
 
 @dataclass
 class packageObject:
-    ID: int()
-    address: str
-    city: str
-    state: str
-    zipcode: str
-    Deadline_time: str
-    weight: int
-    status: str()
-
-def GetStatus(self):
+    ID: int() # package ID
+    address: str # package address
+    city: str  # package city
+    state: str # package state
+    zipcode: str # package zipcode
+    Deadline_time: str #package deadline
+    weight: int # package weight
+    status: str() # package status
+    deliveredTime = 0
+    departureTime = 0
+def GetStatus(self): # returns note/status of package
     return self.status
 
-def GetAddress(self):
+def GetAddress(self): # returns address of package
     return self.address
     
 # package #9 has wrong address. this method will be called to update it.
 def updatedPackage(self):
     print(colors.CREDBORDER + "\nAlert!!!: " + colors.CEND + "We have received updated address for package 9. New Address is: 410 S State St., Salt Lake City, UT 84111\n")
     self.address = "410 S State St."
+    self.zipcode = "84111"
     sleep(1)
     print("Address Updated! Good to go.")

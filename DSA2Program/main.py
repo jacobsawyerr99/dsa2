@@ -56,7 +56,7 @@ t3 = truckObject()
 def loadTruck1():
     list1 = []
     # deliver packages that need to be together
-    print("Loading packages that need to be delivered together with 13,15, and 19...")
+    print("Loading packages that need to be delivered together with 13,15, and 19. Also loading packages with early deadlines...")
     sleep(1)
     # loop through all packages (pass 1)adding all packages that need to be delivered with 13,15,19.
     for i in range (1, 41):
@@ -67,7 +67,7 @@ def loadTruck1():
             # get status of package (the note about needing to be loaded with others)
             packageID = package.GetStatus(packageID)
             # check to see if its any package that meets criteria
-            if ("Must be delivered with" in str(packageID).strip()) or (i == 13) or (i == 15) or (i == 19) or (i == 40):
+            if ("Must be delivered with" in str(packageID).strip()) or (i == 13) or (i == 15) or (i == 19) or (i == 40) or (i == 1) or (i == 31) or (i ==30) or (i ==2) or (i == 37)or (i == 29):
                 # add to to-load list
                 list1.append(i)
                 # removed from hashtable since loaded
@@ -193,6 +193,7 @@ def loadTruck3():
             if len(list1) == 16:
                 print("16 package limit reached.")
                 return list1 
+    return list1
 # call interface to load truck 3
 interface.loadingTruckInterface(3)
 #call loadTruck3 Method
@@ -238,7 +239,7 @@ def findDistance(x, y):
 # uses the nearest neighbor algorithm to deliver packages. First assigns all distances from start point to list
 # it is recursive until there are 0 packages in list.
 
-def deliver(truck, startAddress, departTime):
+def deliver(truck, startAddress):
     # empty list to store distances
     distanceList = []
     # look through list of IDs in truck packages 
@@ -255,11 +256,13 @@ def deliver(truck, startAddress, departTime):
     if(len(truck.packages) > 1):
         # get min value of our distance list generated in the above for loop
         minDist = min(distanceList)
+        # webinars suggested tracking this time this way (with dateTime)
+        truck.departTime += datetime.timedelta(hours = minDist / truck.speed)
         # get index of minimum value. This will match with index in package list
         minDistIndex = distanceList.index(min(distanceList))
-
         # nextPackage will be looked up in hash based on index of value in truck.packages
         nextPackage = hash_table_init.lookup(truck.packages[minDistIndex])
+        nextPackage.deliveredTime = truck.departTime
         # we then assign the nextPackage variable to the address of the next package. this will be sent to the recursion of the function
         nextPackage = nextPackage.address
         # delete values from truck.packages and distancelist so we no longer have to deal with those values
@@ -267,51 +270,51 @@ def deliver(truck, startAddress, departTime):
         del distanceList[minDistIndex]
         # add distance travled for each minimum distance
         truck.distanceTraveled = truck.distanceTraveled + minDist
-        # webinars suggested tracking this time this way (with dateTime)
-        truck.departTime += datetime.timedelta(hours = minDist / 18)
-        print (truck.departTime)
         # recursion
-        deliver(truck, nextPackage, truck.departTime)
+        deliver(truck, nextPackage)
     # if there is only 1 package left in truck.packages
     else:
-        # notify reader we are going back to hub
-        print("Returning to hub...")
-        # add distance from last location back to hub
-        truck.distanceTraveled = truck.distanceTraveled + findDistance(address_lookup((hash_table_init.lookup(truck.packages[0])).address), address_lookup("4001 South 700 East"))
-        truck.departTime += datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(truck.packages[0])).address), address_lookup("4001 South 700 East")) /18 )
-    
+        # last package:
+        truck.distanceTraveled = findDistance(a1, a2) + truck.distanceTraveled
+        p.deliveredTime = truck.departTime   
 
+
+        # notify reader we are going back to hub
+        # add distance from last location back to hub
     # used to add up mileage for each truck
     # print(truck.packages[minDistIndex]) --> gets element from index based on distance
     # returns statement to get the minDist (this will change)
 
 
-# next we need to complete steps for truck 1 then add in time functinality. After that,
-# do truck 2 and 3 with their special requirements.
-# modify interface to be able to display package at any given time.
 def t1Deliver():
     undelivered1 = t1.packages.copy()
     t1.departTime = datetime.timedelta(hours = 8)
-    deliver(t1, t1.startingAddress, t1.departTime)
-    print(t1.distanceTraveled)
-    print(t1.departTime)
-    print("t1 finished")
+    deliver(t1, t1.startingAddress)
+    # backToHub
+    t1.distanceLastPackageToHub = findDistance(address_lookup((hash_table_init.lookup(t1.packages[0])).address), address_lookup("4001 South 700 East"))
+    t1.timeLastPackageToHub = t1.departTime + datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(t1.packages[0])).address), address_lookup("4001 South 700 East")) / t1.speed )
     t1.packages = undelivered1
 
 def t2Deliver():
     undelivered2 = t2.packages.copy()
     t2.departTime = datetime.timedelta(hours = 9)
-    deliver(t2, t2.startingAddress, t2.departTime)
-    print(t2.distanceTraveled)
-    print(t2.departTime)
-    print("t2 finished")
+    deliver(t2, t2.startingAddress)
+    # backToHub
+    t2.distanceLastPackageToHub = findDistance(address_lookup((hash_table_init.lookup(t2.packages[0])).address), address_lookup("4001 South 700 East"))
+    t2.timeLastPackageToHub = t2.departTime + datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(t2.packages[0])).address), address_lookup("4001 South 700 East")) / t2.speed )
     t2.packages = undelivered2
 
 def t3Deliver():
     undelivered = t3.packages.copy()
-    print("truck 1 has returned to hub. delivering truck 3 right now.")
     t3.departTime = datetime.timedelta(hours = 10, minutes= 30)
-    deliver(t3, t3.startingAddress, t3.departTime)
-    print(t3.distanceTraveled)
-    print(t3.departTime)
+    deliver(t3, t3.startingAddress)
+    # backToHub
+    t3.distanceLastPackageToHub = findDistance(address_lookup((hash_table_init.lookup(t3.packages[0])).address), address_lookup("4001 South 700 East"))
+    t3.timeLastPackageToHub = t3.departTime + datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(t3.packages[0])).address), address_lookup("4001 South 700 East")) / t3.speed )
     t3.packages = undelivered
+
+t1Deliver()
+t2Deliver()
+t3Deliver()
+
+interface.output(t1, t2, t3, hash_table_init, datetime.timedelta(hours = 8), datetime.timedelta(hours = 9), datetime.timedelta(hours = 10, minutes= 30))

@@ -12,6 +12,6 @@ class truckObject:
     distanceTraveled = 0.0 #starting distance traveled
     departTime = str # time truck departed
     startingAddress = "4001 South 700 East" #start of trip (hub)
-    distanceLastPackageToHub = 0
-    timeLastPackageToHub = 0
+    distanceLastPackageToHub = 0 # distance from last package to hub
+    timeLastPackageToHub = 0 # final time
 

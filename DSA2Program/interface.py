@@ -185,7 +185,6 @@ def output(t1, t2, t3, hashTable, t1PackagesDepartTime, t2PackagesDepartTime, t3
             print("Deadline Time: " + str(p.Deadline_time))
             print("Weight: " + str(p.weight))
             print("Status: " + str(p.status) + "\n")
-        # print all packages and statuses with time stamp   
         
 
     elif (x == 4):

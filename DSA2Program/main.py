@@ -14,6 +14,8 @@ import datetime
 
 interface.prompt()
 
+# entire flow of program followes recommended steps given by Professor Lusby's study guide
+
 # handler for packages. Loads into hash table in hash.py. using 2 copies to be able to effectively load trucks
 def loadPkgInHash(hash_table_init, hash_table_init2):
     # actual csv reader to grab data from packageFile.csv
@@ -101,7 +103,7 @@ def loadTruck1():
 interface.loadingTruckInterface(1)
 # call loadTruck1 method
 t1.packages = loadTruck1()
-# output
+# output of package list
 print (t1.packages)
 
 # function to load truck 2 based on parameters
@@ -171,7 +173,7 @@ def loadTruck2():
 interface.loadingTruckInterface(2)
 #call loadTruck2 Method
 t2.packages = loadTruck2()
-# output
+# output of package list
 print (t2.packages)
     
 # truck 3 can not leave the hub until truck 1 returns. There is only 2 drivers.
@@ -198,9 +200,10 @@ def loadTruck3():
 interface.loadingTruckInterface(3)
 #call loadTruck3 Method
 t3.packages = loadTruck3()
-# output
+# output of package list
 print (t3.packages)
 sleep(1)
+# update package 9. it has the wrong address
 package9 = package.updatedPackage(hash_table_init.lookup(9))
 
 
@@ -285,36 +288,57 @@ def deliver(truck, startAddress):
     # print(truck.packages[minDistIndex]) --> gets element from index based on distance
     # returns statement to get the minDist (this will change)
 
-
+# function to deliver truck 1 and get distance back to hub and final time
 def t1Deliver():
+    # created dupe list since deliver method clears the t1.packages list
     undelivered1 = t1.packages.copy()
+    # truck one will be first truck of day to leave. Driver of this truck will also be driving truck 3 at 10:30
     t1.departTime = datetime.timedelta(hours = 8)
+    # calls nearest neighbor deliver function
     deliver(t1, t1.startingAddress)
     # backToHub
+    # gets distance from last package location back to hub
     t1.distanceLastPackageToHub = findDistance(address_lookup((hash_table_init.lookup(t1.packages[0])).address), address_lookup("4001 South 700 East"))
+    # gets time to go from last package to hub. This is essentially the time the truck returns
     t1.timeLastPackageToHub = t1.departTime + datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(t1.packages[0])).address), address_lookup("4001 South 700 East")) / t1.speed )
+    # repopulate truck list
     t1.packages = undelivered1
 
+# function to deliver truck 2 and get distance back to hub and final time
 def t2Deliver():
+    # created dupe list since deliver method clears the t2.packages list
     undelivered2 = t2.packages.copy()
+    # truck two will be second truck to leave at 0900
     t2.departTime = datetime.timedelta(hours = 9)
+    # calls nearest neighbor deliver function
     deliver(t2, t2.startingAddress)
     # backToHub
+    # gets distance from last package location back to hub
     t2.distanceLastPackageToHub = findDistance(address_lookup((hash_table_init.lookup(t2.packages[0])).address), address_lookup("4001 South 700 East"))
+    # gets time to go from last package to hub. This is essentially the time the truck returns
     t2.timeLastPackageToHub = t2.departTime + datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(t2.packages[0])).address), address_lookup("4001 South 700 East")) / t2.speed )
+    # repopulate truck list
     t2.packages = undelivered2
 
+# function to deliver truck 3 and get distance back to hub and final time
 def t3Deliver():
+    # created dupe list since deliver method clears the t3.packages list
     undelivered = t3.packages.copy()
+    # truck 3 will be the third truck to leave at 10:30. The same driver that drove truck 1 will be driving this truck
     t3.departTime = datetime.timedelta(hours = 10, minutes= 30)
+    # calls nearest neighbor deliver function
     deliver(t3, t3.startingAddress)
     # backToHub
     t3.distanceLastPackageToHub = findDistance(address_lookup((hash_table_init.lookup(t3.packages[0])).address), address_lookup("4001 South 700 East"))
+    # gets time to go from last package to hub. This is essentially the time the truck returns
     t3.timeLastPackageToHub = t3.departTime + datetime.timedelta(hours = findDistance(address_lookup((hash_table_init.lookup(t3.packages[0])).address), address_lookup("4001 South 700 East")) / t3.speed )
+    # repopulate truck list
     t3.packages = undelivered
 
+#calls to run the previous 3 functinos
 t1Deliver()
 t2Deliver()
 t3Deliver()
 
+# calls output function in interface. this will handle rest of program
 interface.output(t1, t2, t3, hash_table_init, datetime.timedelta(hours = 8), datetime.timedelta(hours = 9), datetime.timedelta(hours = 10, minutes= 30))

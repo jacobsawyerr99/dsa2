@@ -20,6 +20,7 @@ class packageObject:
     status: str() # package status
     deliveredTime = 0
     departureTime = 0
+    
 def GetStatus(self): # returns note/status of package
     return self.status
 
@@ -28,8 +29,12 @@ def GetAddress(self): # returns address of package
     
 # package #9 has wrong address. this method will be called to update it.
 def updatedPackage(self):
+    # prints the output that the address is being updates
     print(colors.CREDBORDER + "\nAlert!!!: " + colors.CEND + "We have received updated address for package 9. New Address is: 410 S State St., Salt Lake City, UT 84111\n")
+    # self (package 9) new address
     self.address = "410 S State St."
+    # self package zipcode update
     self.zipcode = "84111"
+    #sleep so its easier to read
     sleep(1)
     print("Address Updated! Good to go.")
